@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+    }
+    #game-board {
+        width: 300px;
+        height: 300px;
+        border: 1px solid #000;
+        position: relative;
+    }
+    .cell {
+        width: 20px;
+        height: 20px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        position: absolute;
+    }
+    .food {
+        background-color: #ff0000;
+    }
+</style>
+</head>
+<body>
+<div id="game-board"></div>
+<script>
+const gameBoard = document.getElementById('game-board');
+const gridSize = 15;
+const cellSize = 20;
+let snake = [{ x: 5, y: 5 }];
+let food = { x: 10, y: 10 };
+let direction = 'RIGHT';
+
+function createCell(x, y, className) {
+    const cell = document.createElement('div');
+    cell.className = 'cell ' + className;
+    cell.style.left = (x * cellSize) + 'px';
+    cell.style.top = (y * cellSize) + 'px';
+    gameBoard.appendChild(cell);
+}
+
+function drawGame() {
+    gameBoard.innerHTML = '';
+
+    for (let y = 0; y < gridSize; y++) {
+        for (let x = 0; x < gridSize; x++) {
+            createCell(x, y, '');
+        }
+    }
+
+    snake.forEach(segment => {
+        createCell(segment.x, segment.y, 'snake');
+    });
+
+    createCell(food.x, food.y, 'food');
+}
+
+function updateGame() {
+    let newHead = { x: snake[0].x, y: snake[0].y };
+
+    if (direction === 'UP') newHead.y -= 1;
+    if (direction === 'DOWN') newHead.y += 1;
+    if (direction === 'LEFT') newHead.x -= 1;
+    if (direction === 'RIGHT') newHead.x += 1;
+
+    snake.unshift(newHead);
+
+    if (newHead.x === food.x && newHead.y === food.y) {
+        food.x = Math.floor(Math.random() * gridSize);
+        food.y = Math.floor(Math.random() * gridSize);
+    } else {
+        snake.pop();
+    }
+
+    if (
+        newHead.x < 0 || newHead.x >= gridSize ||
+        newHead.y < 0 || newHead.y >= gridSize ||
+        snake.some(segment => segment.x === newHead.x && segment.y === newHead.y)
+    ) {
+        clearInterval(gameInterval);
+        alert('게임 오버!');
+    }
+
+    drawGame();
+}
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowUp' && direction !== 'DOWN') direction = 'UP';
+    if (event.key === 'ArrowDown' && direction !== 'UP') direction = 'DOWN';
+    if (event.key === 'ArrowLeft' && direction !== 'RIGHT') direction = 'LEFT';
+    if (event.key === 'ArrowRight' && direction !== 'LEFT') direction = 'RIGHT';
+});
+
+drawGame();
+const gameInterval = setInterval(updateGame, 200);
+</script>
+</body>
+</html>
