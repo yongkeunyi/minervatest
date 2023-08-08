@@ -1,5 +1,5 @@
 import random
-
+ # 수정하는 것을 테스트합니다
 def generate_lotto_numbers():
     white_balls = random.sample(range(1, 70), 5)
     powerball = random.randint(1, 26)
@@ -8,7 +8,7 @@ def generate_lotto_numbers():
 def main():
     print("로또 당첨 번호 추첨기")
     print("====================")
-    
+   
     while True:
         input("누르십시오... Enter를 누르면 번호를 추첨합니다.")
         
