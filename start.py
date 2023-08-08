@@ -1,66 +1,27 @@
 import random
-import msvcrt
 
-# 게임 화면 크기 설정
-WIDTH = 20
-HEIGHT = 10
+def generate_lotto_numbers():
+    white_balls = random.sample(range(1, 70), 5)
+    powerball = random.randint(1, 26)
+    return sorted(white_balls), powerball
 
-# 지렁이 초기 위치 및 방향 설정
-snake_x = WIDTH // 2
-snake_y = HEIGHT // 2
-direction = 'RIGHT'
+def main():
+    print("로또 당첨 번호 추첨기")
+    print("====================")
+    
+    while True:
+        input("누르십시오... Enter를 누르면 번호를 추첨합니다.")
+        
+        white_balls, powerball = generate_lotto_numbers()
+        
+        print("추첨된 번호:")
+        print("흰공:", white_balls)
+        print("빨강공 (파워볼):", powerball)
+        
+        play_again = input("더 추첨하시겠습니까? (y/n): ")
+        if play_again.lower() != 'y':
+            break
 
-# 먹이 위치 설정
-food_x = random.randint(0, WIDTH - 1)
-food_y = random.randint(0, HEIGHT - 1)
+if __name__ == "__main__":
+    main()
 
-# 게임 루프
-while True:
-    # 화면 지우기
-    print("\033[H\033[J", end='')
-
-    # 게임 화면 그리기
-    for y in range(HEIGHT):
-        for x in range(WIDTH):
-            if x == snake_x and y == snake_y:
-                print('O', end='')
-            elif x == food_x and y == food_y:
-                print('*', end='')
-            else:
-                print('.', end='')
-        print()
-
-    # 사용자 입력 받기
-    if msvcrt.kbhit():
-        key = msvcrt.getch().decode('utf-8').upper()
-        if key == 'W':
-            direction = 'UP'
-        elif key == 'S':
-            direction = 'DOWN'
-        elif key == 'A':
-            direction = 'LEFT'
-        elif key == 'D':
-            direction = 'RIGHT'
-
-    # 지렁이 이동
-    if direction == 'UP':
-        snake_y -= 1
-    elif direction == 'DOWN':
-        snake_y += 1
-    elif direction == 'LEFT':
-        snake_x -= 1
-    elif direction == 'RIGHT':
-        snake_x += 1
-
-    # 벽 충돌 검사
-    if snake_x < 0 or snake_x >= WIDTH or snake_y < 0 or snake_y >= HEIGHT:
-        print("게임 오버!")
-        break
-
-    # 먹이 먹기
-    if snake_x == food_x and snake_y == food_y:
-        food_x = random.randint(0, WIDTH - 1)
-        food_y = random.randint(0, HEIGHT - 1)
-
-# 게임 종료 메시지 출력
-print("게임 종료")
